@@ -1,0 +1,3 @@
+{
+  "functions": { "api/feedback.js": { "maxDuration": 60 } }
+}
