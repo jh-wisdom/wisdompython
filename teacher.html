@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>파이썬 첫걸음 — 선생님 화면</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F6; --panel:#FFFFFF; --panel-2:#F6F8FB; --ink:#1D2B4F; --ink-2:#55627F; --line:#D9DFEA;
+  --blue:#3463C9; --blue-ink:#FFFFFF; --blue-soft:#E4ECFB; --yellow:#F6D04D; --yellow-soft:#FCF1C4;
+  --ok:#1F8A5B; --ok-soft:#DDF2E7; --bad:#C2412D; --bad-soft:#F9E1DC;
+  --c1:#1F8A5B; --c1-ink:#FFFFFF; --c2:#9ED7B9; --c2-ink:#123D2A; --c3:#F6D04D; --c3-ink:#3D3210; --cx:#F3C3B9; --cx-ink:#6B1F12;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,"D2Coding",monospace;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#10141D; --panel:#181E2B; --panel-2:#1D2434; --ink:#E6EAF2; --ink-2:#9AA6BE; --line:#2B3448;
+    --blue:#7FA2F0; --blue-ink:#10141D; --blue-soft:#22304F; --yellow:#E9C548; --yellow-soft:#3A3420;
+    --ok:#5CC793; --ok-soft:#183427; --bad:#F08A76; --bad-soft:#3A201C;
+    --c1:#3FAF78; --c1-ink:#0C1A12; --c2:#24563D; --c2-ink:#CFEFDC; --c3:#7A6522; --c3-ink:#FFF1C2; --cx:#5A2A22; --cx-ink:#FFD6CC;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10141D; --panel:#181E2B; --panel-2:#1D2434; --ink:#E6EAF2; --ink-2:#9AA6BE; --line:#2B3448;
+  --blue:#7FA2F0; --blue-ink:#10141D; --blue-soft:#22304F; --yellow:#E9C548; --yellow-soft:#3A3420;
+  --ok:#5CC793; --ok-soft:#183427; --bad:#F08A76; --bad-soft:#3A201C;
+  --c1:#3FAF78; --c1-ink:#0C1A12; --c2:#24563D; --c2-ink:#CFEFDC; --c3:#7A6522; --c3-ink:#FFF1C2; --cx:#5A2A22; --cx-ink:#FFD6CC;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.topbar h1{font-size:18px;margin:0;white-space:nowrap}
+.topbar h1 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--yellow);box-shadow:6px 0 0 var(--blue);margin-right:14px;vertical-align:1px}
+.topbar .who{font-size:13px;color:var(--ink-2);padding:2px 8px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line)}
+.topbar .sp{margin-left:auto}
+.btn{border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:6px 14px;font-size:14px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:default}
+a.btn{text-decoration:none;color:inherit;display:inline-block}
+main{max-width:1240px;margin:0 auto;padding:20px 20px 60px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.tab{border:0;background:none;padding:10px 14px;font-size:15px;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--blue);font-weight:600}
+[hidden]{display:none !important}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:18px}
+.card h2{font-size:16px;margin:0 0 4px}
+.card .sub{color:var(--ink-2);font-size:13.5px;margin:0 0 12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-size:28px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--ink-2)}
+
+/* login */
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login{max-width:380px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px 26px}
+.login h1{font-size:20px;margin:0 0 4px}
+.login p{color:var(--ink-2);font-size:14px;margin:0 0 16px}
+.login input{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--panel-2);font-size:16px}
+.login input:focus{outline:none;border-color:var(--blue)}
+.msg{min-height:22px;margin:6px 0 8px;font-size:13.5px;color:var(--bad)}
+.wide{width:100%;padding:10px}
+
+/* hard problems */
+.hard{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.hard > div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel-2)}
+.hard .t{font-weight:600;font-size:14px}
+.hard .t small{font-family:var(--mono);color:var(--ink-2);font-weight:400;margin-right:6px}
+.hard .m{font-size:13px;color:var(--ink-2)}
+.hard .m b{color:var(--bad)}
+
+/* matrix */
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.tools label{font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.tools select{border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--panel-2)}
+.tools .sp{margin-left:auto}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin:10px 0 0}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.mwrap{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table.m{border-collapse:separate;border-spacing:0;font-size:13px;min-width:100%}
+table.m th,table.m td{padding:0;text-align:center;border-bottom:1px solid var(--line)}
+table.m thead th{position:sticky;top:0;background:var(--panel-2);z-index:2;font-weight:500;color:var(--ink-2)}
+table.m thead tr:nth-child(2) th{top:29px;font-family:var(--mono);font-size:11.5px;padding:4px 0;min-width:30px}
+table.m thead tr:first-child th{height:29px;font-size:12px;border-left:1px solid var(--line);white-space:nowrap;padding:0 6px}
+table.m .code{position:sticky;left:0;background:var(--panel);z-index:1;font-family:var(--mono);text-align:left;padding:6px 12px;white-space:nowrap;border-right:1px solid var(--line)}
+table.m thead .code{z-index:3;background:var(--panel-2)}
+table.m td.c{width:30px;height:30px;font-family:var(--mono);font-size:12px;font-weight:600}
+table.m td.c.u0{border-left:1px solid var(--line)}
+table.m td.c1{background:var(--c1);color:var(--c1-ink)}
+table.m td.c2{background:var(--c2);color:var(--c2-ink)}
+table.m td.c3{background:var(--c3);color:var(--c3-ink)}
+table.m td.cx{background:var(--cx);color:var(--cx-ink)}
+table.m td.sum{padding:0 10px;font-variant-numeric:tabular-nums;white-space:nowrap;border-left:1px solid var(--line)}
+table.m td.sum.done{color:var(--ok);font-weight:700}
+table.m td.last{color:var(--ink-2);font-size:12px;padding:0 10px;white-space:nowrap}
+table.m tfoot td{background:var(--panel-2);font-size:11.5px;color:var(--ink-2);font-family:var(--mono);height:28px;position:sticky;bottom:0}
+table.m tfoot tr:first-child td{bottom:28px}
+table.m tfoot .code{font-family:var(--sans);font-size:12.5px;background:var(--panel-2)}
+.empty{color:var(--ink-2);font-size:14px;padding:24px;text-align:center}
+
+/* codes */
+.create{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.create input{width:90px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2)}
+.newcodes{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.newcodes span{font-family:var(--mono);font-size:15px;padding:4px 10px;border-radius:8px;background:var(--yellow-soft);border:1px solid var(--yellow)}
+.note{border-left:3px solid var(--yellow);background:var(--panel-2);padding:10px 14px;border-radius:0 8px 8px 0;font-size:13.5px;color:var(--ink-2);margin:0}
+table.list{width:100%;border-collapse:collapse;font-size:14px}
+table.list th{text-align:left;font-weight:500;color:var(--ink-2);font-size:13px;padding:8px;border-bottom:1px solid var(--line)}
+table.list td{padding:8px;border-bottom:1px solid var(--line)}
+table.list td.mono{font-family:var(--mono)}
+.listbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 8px}
+.listbar .cnt{font-size:13px;color:var(--ink-2);margin-right:auto}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.toast.show{opacity:1}
+
+/* print slips */
+#print{display:none}
+@media print{
+  body{background:#fff;color:#000}
+  body > *:not(#print){display:none !important}
+  #print{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .slip{border:1px dashed #888;padding:14px 16px;break-inside:avoid;font-family:var(--sans)}
+  .slip .h{font-size:11pt;font-weight:600}
+  .slip .c{font-family:var(--mono);font-size:24pt;letter-spacing:.08em;margin:4px 0}
+  .slip .u{font-size:9pt}
+  .slip .n{font-size:10pt;margin-top:8px}
+}
+@media (max-width:760px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  main{padding:14px 12px 40px}
+  .topbar{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<div class="login-wrap" id="loginView">
+  <div class="login">
+    <h1>선생님 화면</h1>
+    <p>Vercel 환경 변수에 넣은 TEACHER_PASSWORD를 입력하세요.</p>
+    <input type="password" id="pw" autocomplete="current-password" aria-label="비밀번호">
+    <p class="msg" id="pwMsg" role="alert"></p>
+    <button class="btn primary wide" id="pwBtn">들어가기</button>
+  </div>
+</div>
+
+<div id="mainView" hidden>
+  <header class="topbar">
+    <h1><span class="dot" aria-hidden="true"></span>파이썬 첫걸음</h1>
+    <span class="who">선생님 화면</span>
+    <span class="sp"></span>
+    <button class="btn" id="refreshBtn">새로고침</button>
+    <a class="btn" href="/" target="_blank" rel="noopener">학생 화면 열기</a>
+    <button class="btn" id="logoutBtn">나가기</button>
+  </header>
+  <main>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-status" aria-selected="true">학습 현황</button>
+      <button class="tab" role="tab" id="t-codes" aria-selected="false">학습 코드 관리</button>
+    </div>
+
+    <section id="v-status">
+      <div class="stats" id="stats"></div>
+      <div class="card">
+        <h2>다시 짚어 볼 문제</h2>
+        <p class="sub">아직 못 푼 학생이 많거나, 푼 학생도 여러 번 시도한 문제예요.</p>
+        <div class="hard" id="hard"></div>
+      </div>
+      <div class="card">
+        <h2>학생별 문제 기록</h2>
+        <p class="sub">칸의 숫자는 처음 통과할 때까지 제출한 횟수예요. 빨간 칸은 아직 못 푼 문제의 제출 횟수예요.</p>
+        <div class="tools">
+          <label>정렬 <select id="sort">
+            <option value="code">코드순</option>
+            <option value="most">해결 많은 순</option>
+            <option value="least">해결 적은 순</option>
+            <option value="recent">최근 활동순</option>
+          </select></label>
+          <label><input type="checkbox" id="onlyActive" checked> 시작한 학생만</label>
+          <span class="sp"></span>
+          <button class="btn" id="csvBtn">엑셀(CSV)로 받기</button>
+        </div>
+        <div class="mwrap" id="matrix"></div>
+        <div class="legend">
+          <span><i style="background:var(--c1)"></i>한 번에 해결</span>
+          <span><i style="background:var(--c2)"></i>2~3번 만에</span>
+          <span><i style="background:var(--c3)"></i>4번 이상</span>
+          <span><i style="background:var(--cx)"></i>도전 중 (제출 횟수)</span>
+          <span><i style="background:var(--panel);border:1px solid var(--line)"></i>아직 안 함</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-codes" hidden>
+      <div class="card">
+        <h2>학습 코드 만들기</h2>
+        <p class="sub">학생 수만큼 만들어 한 명에게 하나씩 나눠 주세요. 헷갈리는 글자(I, L, O, 0, 1)는 쓰지 않아요.</p>
+        <div class="create">
+          <input type="number" id="count" min="1" max="60" value="30" aria-label="만들 개수"> 개
+          <button class="btn primary" id="createBtn">코드 만들기</button>
+        </div>
+        <div class="newcodes" id="newcodes"></div>
+      </div>
+      <p class="note"><b>개인정보 보호:</b> 어느 코드가 어느 학생인지는 이 사이트에 적지 말고, 종이 명단이나 선생님 PC에만 보관하세요. 그래서 이 화면에는 이름을 적는 칸을 일부러 두지 않았어요. 인쇄용 쪽지의 이름 칸은 종이에만 쓰는 용도예요.</p>
+      <div class="card" style="margin-top:18px">
+        <div class="listbar">
+          <span class="cnt" id="codeCount"></span>
+          <button class="btn" id="printBtn">인쇄용 쪽지</button>
+          <button class="btn" id="resetBtn">선택 기록 초기화</button>
+          <button class="btn danger" id="delBtn">선택 삭제</button>
+        </div>
+        <div style="overflow-x:auto"><table class="list" id="codeList"></table></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="print"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="problems.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2000); }
+const fmtDate = t => { if(!t) return ""; const d=new Date(t); return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; };
+const fmtDay = t => { if(!t) return ""; const d=new Date(t); return `${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`; };
+
+let pw = ""; try { pw = sessionStorage.getItem("pyfirst:tpw") || ""; } catch(e){}
+let students = [], lastNew = [];
+
+async function api(payload){
+  const res = await fetch("/api/teacher", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(Object.assign({password:pw}, payload))});
+  const d = await res.json().catch(()=>({}));
+  if (!res.ok) throw Object.assign(new Error(d.error||"요청 실패"), {status:res.status, msg:d.error});
+  return d;
+}
+
+/* ---------- 로그인 ---------- */
+async function login(){
+  $("#pwBtn").disabled = true; $("#pwMsg").textContent = "";
+  try {
+    const d = await api({action:"list"});
+    try { sessionStorage.setItem("pyfirst:tpw", pw); } catch(e){}
+    students = d.students; $("#loginView").hidden = true; $("#mainView").hidden = false; render();
+  } catch(e){
+    try { sessionStorage.removeItem("pyfirst:tpw"); } catch(_){}
+    $("#loginView").hidden = false; $("#mainView").hidden = true;
+    $("#pwMsg").textContent = e.msg || "서버에 연결하지 못했어요.";
+  } finally { $("#pwBtn").disabled = false; }
+}
+$("#pwBtn").onclick = ()=>{ pw = $("#pw").value; if (pw) login(); };
+$("#pw").addEventListener("keydown", e=>{ if(e.key==="Enter"){ pw=$("#pw").value; if(pw) login(); } });
+$("#logoutBtn").onclick = ()=>{ pw=""; try{sessionStorage.removeItem("pyfirst:tpw");}catch(e){} location.reload(); };
+$("#refreshBtn").onclick = async ()=>{ try { students = (await api({action:"list"})).students; render(); toast("새로 불러왔어요"); } catch(e){ toast(e.msg||"불러오지 못했어요"); } };
+
+/* ---------- 탭 ---------- */
+document.querySelector(".tabs").onclick = e=>{
+  const t = e.target.closest(".tab"); if(!t) return;
+  ["status","codes"].forEach(n=>{ $("#t-"+n).setAttribute("aria-selected", "t-"+n===t.id); $("#v-"+n).hidden = "t-"+n!==t.id; });
+};
+
+/* ---------- 계산 ---------- */
+const N = PROBLEMS.length;
+function summary(s){
+  const P = s.progress || {};
+  let solved=0, submits=0;
+  for (const p of PROBLEMS){ const r=P[p.id]; if(!r) continue; submits += r.a||0; if (r.s) solved++; }
+  return {solved, submits, started: submits>0};
+}
+function render(){ renderStats(); renderHard(); renderMatrix(); renderCodes(); }
+
+function renderStats(){
+  const sums = students.map(summary);
+  const started = sums.filter(x=>x.started);
+  const done = sums.filter(x=>x.solved===N).length;
+  const avg = started.length ? (started.reduce((n,x)=>n+x.solved,0)/started.length).toFixed(1) : "–";
+  $("#stats").innerHTML = `
+    <div class="stat"><b>${students.length}</b><span>등록된 학습 코드</span></div>
+    <div class="stat"><b>${started.length}</b><span>문제를 시작한 학생</span></div>
+    <div class="stat"><b>${done}</b><span>${N}문제 완주한 학생</span></div>
+    <div class="stat"><b>${avg}</b><span>시작한 학생 평균 해결 수</span></div>`;
+}
+function perProblem(){
+  return PROBLEMS.map(p=>{
+    let solvers=0, stuck=0, sumF=0;
+    for (const s of students){ const r=(s.progress||{})[p.id]; if(!r||!r.a) continue; if(r.s){solvers++; sumF+=r.f;} else stuck++; }
+    return {p, solvers, stuck, avg: solvers? sumF/solvers : 0, tried: solvers+stuck};
+  });
+}
+function renderHard(){
+  const list = perProblem().filter(x=>x.tried>0)
+    .map(x=>({...x, score: (x.stuck/x.tried)*3 + x.avg}))
+    .filter(x=>x.stuck>0 || x.avg>=2)
+    .sort((a,b)=>b.score-a.score).slice(0,6);
+  $("#hard").innerHTML = list.length ? list.map(x=>`<div><div class="t"><small>${x.p.id.slice(1)}</small>${esc(x.p.title)}</div>
+    <div class="m">${x.stuck?`<b>${x.stuck}명 도전 중</b> · `:""}${x.solvers}명 해결${x.solvers?` · 평균 ${x.avg.toFixed(1)}번`:""}</div></div>`).join("")
+    : `<p class="empty" style="padding:8px;text-align:left">아직 어려워하는 문제가 보이지 않아요.</p>`;
+}
+function sorted(){
+  let list = students.map(s=>({s, ...summary(s)}));
+  if ($("#onlyActive").checked) list = list.filter(x=>x.started);
+  const k = $("#sort").value;
+  list.sort((a,b)=> k==="most" ? b.solved-a.solved || a.submits-b.submits
+                 : k==="least" ? a.solved-b.solved || b.submits-a.submits
+                 : k==="recent" ? (b.s.lastSeen||0)-(a.s.lastSeen||0)
+                 : a.s.code.localeCompare(b.s.code));
+  return list;
+}
+function cellClass(r){
+  if (!r || !r.a) return ["",""];
+  if (r.s) return [r.f===1?"c1":r.f<=3?"c2":"c3", String(r.f)];
+  return ["cx", String(r.a)];
+}
+function renderMatrix(){
+  const list = sorted();
+  if (!list.length){ $("#matrix").innerHTML = `<p class="empty">${students.length? "아직 문제를 시작한 학생이 없어요." : "등록된 학습 코드가 없어요. '학습 코드 관리' 탭에서 만들어 주세요."}</p>`; return; }
+  const head1 = UNITS.map((u,ui)=>`<th colspan="${PROBLEMS.filter(p=>p.u===ui).length}" title="${esc(u.name)}">${ui+1}. ${esc(u.name)}</th>`).join("");
+  const head2 = PROBLEMS.map(p=>`<th title="${esc(p.title)}">${p.id.slice(1)}</th>`).join("");
+  const rows = list.map(x=>{
+    const P = x.s.progress||{};
+    const cells = PROBLEMS.map((p,i)=>{
+      const [c,t] = cellClass(P[p.id]); const first = i===0 || PROBLEMS[i-1].u!==p.u;
+      const tip = !P[p.id]||!P[p.id].a ? "아직 안 함" : P[p.id].s ? `${P[p.id].f}번 만에 해결 · ${fmtDate(P[p.id].s)}` : `${P[p.id].a}번 제출, 아직 못 풂`;
+      return `<td class="c ${c}${first?" u0":""}" title="${p.id.slice(1)}. ${esc(p.title)} — ${tip}">${t}</td>`;
+    }).join("");
+    return `<tr><td class="code">${esc(x.s.code)}</td>${cells}<td class="sum${x.solved===N?" done":""}">${x.solved}/${N}</td><td class="sum">${x.submits}</td><td class="last">${fmtDate(x.s.lastSeen)}</td></tr>`;
+  }).join("");
+  const pp = perProblem();
+  const active = students.filter(s=>summary(s).started).length || 1;
+  const f1 = pp.map((x,i)=>`<td class="${i===0||PROBLEMS[i-1].u!==x.p.u?"u0":""}" title="해결 ${x.solvers}명">${Math.round(x.solvers/active*100)}</td>`).join("");
+  const f2 = pp.map((x,i)=>`<td class="${i===0||PROBLEMS[i-1].u!==x.p.u?"u0":""}">${x.solvers?x.avg.toFixed(1):"–"}</td>`).join("");
+  $("#matrix").innerHTML = `<table class="m">
+    <thead><tr><th class="code" rowspan="2">학습 코드</th>${head1}<th rowspan="2">해결</th><th rowspan="2">제출</th><th rowspan="2">최근 활동</th></tr><tr>${head2}</tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td class="code">해결률 %</td>${f1}<td colspan="3"></td></tr><tr><td class="code">평균 시도</td>${f2}<td colspan="3"></td></tr></tfoot></table>`;
+}
+$("#sort").onchange = renderMatrix;
+$("#onlyActive").onchange = renderMatrix;
+
+$("#csvBtn").onclick = ()=>{
+  const q = v => `"${String(v).replace(/"/g,'""')}"`;
+  const head = ["학습 코드", ...PROBLEMS.map(p=>`${p.id.slice(1)}. ${p.title}`), "해결 수", "전체 제출", "최근 활동"];
+  const lines = [head.map(q).join(",")];
+  for (const x of sorted()){
+    const P = x.s.progress||{};
+    lines.push([x.s.code, ...PROBLEMS.map(p=>{ const r=P[p.id]; return !r||!r.a ? "" : r.s ? r.f : `미해결(${r.a})`; }), x.solved, x.submits, fmtDate(x.s.lastSeen)].map(q).join(","));
+  }
+  lines.push("", q("숫자 = 처음 통과까지 제출 횟수, 미해결(n) = 아직 못 푼 문제의 제출 횟수"));
+  const blob = new Blob(["\ufeff"+lines.join("\r\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  const d = new Date(); a.download = `파이썬첫걸음_현황_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+};
+
+/* ---------- 코드 관리 ---------- */
+function renderCodes(){
+  $("#codeCount").textContent = `학습 코드 ${students.length}개`;
+  const list = [...students].sort((a,b)=>a.code.localeCompare(b.code));
+  $("#codeList").innerHTML = list.length ? `<thead><tr><th><input type="checkbox" id="all" aria-label="모두 선택"></th><th>학습 코드</th><th>만든 날</th><th>해결</th><th>최근 활동</th></tr></thead><tbody>${
+    list.map(s=>{ const x=summary(s); return `<tr><td><input type="checkbox" class="pick" value="${esc(s.code)}" aria-label="${esc(s.code)} 선택"></td><td class="mono">${esc(s.code)}${lastNew.includes(s.code)?` <small style="color:var(--blue)">새 코드</small>`:""}</td><td>${fmtDay(s.created)}</td><td>${x.solved}/${N}</td><td>${fmtDate(s.lastSeen)||"–"}</td></tr>`; }).join("")
+  }</tbody>` : `<tbody><tr><td class="empty">아직 만든 코드가 없어요.</td></tr></tbody>`;
+  const all = $("#all"); if (all) all.onchange = ()=>document.querySelectorAll(".pick").forEach(c=>c.checked=all.checked);
+}
+const picked = () => [...document.querySelectorAll(".pick:checked")].map(c=>c.value);
+
+$("#createBtn").onclick = async ()=>{
+  const n = parseInt($("#count").value,10);
+  if (!(n>=1 && n<=60)) return toast("1~60개 사이로 정해 주세요");
+  $("#createBtn").disabled = true;
+  try {
+    const d = await api({action:"create", count:n});
+    lastNew = d.created;
+    $("#newcodes").innerHTML = d.created.map(c=>`<span>${esc(c)}</span>`).join("");
+    students = (await api({action:"list"})).students; render();
+    toast(`코드 ${d.created.length}개를 만들었어요`);
+  } catch(e){ toast(e.msg||"만들지 못했어요"); }
+  finally { $("#createBtn").disabled = false; }
+};
+$("#delBtn").onclick = async ()=>{
+  const c = picked(); if (!c.length) return toast("삭제할 코드를 선택해 주세요");
+  if (!confirm(`코드 ${c.length}개와 그 기록을 모두 삭제할까요? 되돌릴 수 없어요.`)) return;
+  try { await api({action:"delete", codes:c}); students = (await api({action:"list"})).students; render(); toast("삭제했어요"); } catch(e){ toast(e.msg||"삭제하지 못했어요"); }
+};
+$("#resetBtn").onclick = async ()=>{
+  const c = picked(); if (!c.length) return toast("초기화할 코드를 선택해 주세요");
+  if (!confirm(`코드 ${c.length}개의 풀이 기록을 지울까요? 코드는 그대로 남아요.`)) return;
+  try { await api({action:"reset", codes:c}); students = (await api({action:"list"})).students; render(); toast("기록을 초기화했어요"); } catch(e){ toast(e.msg||"초기화하지 못했어요"); }
+};
+$("#printBtn").onclick = ()=>{
+  const c = picked().length ? picked() : (lastNew.length ? lastNew : students.map(s=>s.code).sort());
+  if (!c.length) return toast("인쇄할 코드가 없어요");
+  $("#print").innerHTML = c.map(code=>`<div class="slip"><div class="h">파이썬 첫걸음 학습 코드</div><div class="c">${esc(code)}</div><div class="u">${esc(location.origin)} 에 접속해서 입력하세요. 친구에게 알려 주지 마세요.</div><div class="n">이름: ______________________</div></div>`).join("");
+  window.print();
+};
+
+if (pw) login(); else $("#pw").focus();
+</script>
+</body>
+</html>

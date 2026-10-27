@@ -1,3 +1,7 @@
 {
-  "functions": { "api/feedback.js": { "maxDuration": 60 } }
+  "cleanUrls": true,
+  "functions": { "api/feedback.js": { "maxDuration": 60 } },
+  "headers": [
+    { "source": "/teacher", "headers": [ { "key": "X-Robots-Tag", "value": "noindex" } ] }
+  ]
 }
